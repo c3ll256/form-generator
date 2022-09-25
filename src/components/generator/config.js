@@ -12,12 +12,37 @@ export const formConf = {
   formBtns: true
 }
 
+export const demoComponents = [
+  {
+    // 组件的自定义配置
+    __config__: {
+      label: '单图片上传',
+      tag: 'jox-upload',
+      tagIcon: 'input',
+      required: true,
+      layout: 'colFormItem',
+      span: 24
+    },
+    isCustom: true,
+    // 组件的自定义属性
+    __custom__: {
+      imageSizeWidth: 300,
+      imageSizeheight: 300,
+      coverImageSizeWidth: 150,
+      coverImageSizeHeight: 150,
+      imageDefaultUrl: ''
+    },
+    __method__: 'test() {console.log(123)},'
+    // 其余的为可直接写在组件标签上的属性
+  }
+]
+
 // 输入型组件 【左面板】
 export const inputComponents = [
   {
     // 组件的自定义配置
     __config__: {
-      label: '单行文本',
+      label: '',
       labelWidth: null,
       showLabel: true,
       changeTag: true,

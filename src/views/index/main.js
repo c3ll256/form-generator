@@ -5,11 +5,14 @@ import '@/styles/index.scss'
 import '@/icons'
 import axios from 'axios'
 import Tinymce from '@/components/tinymce/index.vue'
+import JoxUpload from '@/views/common/upload.vue'
 
+Vue.component('jox-upload', JoxUpload)
 Vue.component('tinymce', Tinymce)
 
 Vue.config.productionTip = false
 Vue.prototype.$axios = axios
+axios.defaults.baseURL = '/api'
 
 new Vue({
   router,

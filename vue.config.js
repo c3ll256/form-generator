@@ -16,6 +16,7 @@ function resolve(dir) {
 }
 
 module.exports = {
+  lintOnSave: false,
   publicPath: process.env.NODE_ENV === 'production'
     ? '/form-generator/'
     : '/',
@@ -36,7 +37,19 @@ module.exports = {
     }
   },
   devServer: {
-    overlay: false
+    // overlay: false
+    // 跨域配置
+    proxy: {
+      // 接口是以 /api 开头的需要代理
+      '/api': {
+        target: 'http://192.168.0.55:8081/ent-server/', // 代理接口地址
+        changeOrigin: true, // 默认false，是否需要改变原始主机头为目标URL
+        // ws: true, // 是否代理websockets
+        pathRewrite: {
+          '^/api': '' // 重写请求。实际接口中并没有 /api，所以需要替换为空 ''
+        }
+      }
+    }
   },
   productionSourceMap: false,
   configureWebpack: {

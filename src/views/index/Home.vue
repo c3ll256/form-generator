@@ -130,7 +130,7 @@ import FormDrawer from './FormDrawer'
 import JsonDrawer from './JsonDrawer'
 import RightPanel from './RightPanel'
 import {
-  inputComponents, selectComponents, layoutComponents, formConf
+  inputComponents, selectComponents, layoutComponents, formConf, demoComponents
 } from '@/components/generator/config'
 import {
   exportDefault, beautifierConf, isNumberStr, titleCase, deepClone, isObjectObject
@@ -200,6 +200,10 @@ export default {
         {
           title: '布局型组件',
           list: layoutComponents
+        },
+        {
+          title: 'demo组件',
+          list: demoComponents
         }
       ]
     }
@@ -239,12 +243,22 @@ export default {
     }
   },
   mounted() {
+    this.drawingList = []
+    this.idGlobal = 100
+
+    this.$axios.get('/v2/api-docs?group=platform%201.0').then(({ data }) => {
+      const dto = data.definitions.CollegeEntity.properties;
+      for (const item in dto) {
+        let input = this.cloneComponent(this.inputComponents[0]);
+        input.__config__.label = dto[item].description ? dto[item].description : `${item}`;
+        this.addComponent(input, `${item}`)
+      }
+    })
     if (Array.isArray(drawingListInDB) && drawingListInDB.length > 0) {
       this.drawingList = drawingListInDB
     } else {
       this.drawingList = drawingDefalut
     }
-    this.activeFormItem(this.drawingList[0])
     if (formConfInDB) {
       this.formConf = formConfInDB
     }
@@ -322,27 +336,27 @@ export default {
         this.activeId = this.idGlobal
       }
     },
-    addComponent(item) {
-      const clone = this.cloneComponent(item)
+    addComponent(item, model) {
+      const clone = this.cloneComponent(item, model)
       this.fetchData(clone)
       this.drawingList.push(clone)
       this.activeFormItem(clone)
     },
-    cloneComponent(origin) {
+    cloneComponent(origin, model) {
       const clone = deepClone(origin)
       const config = clone.__config__
       config.span = this.formConf.span // 生成代码时，会根据span做精简判断
-      this.createIdAndKey(clone)
+      this.createIdAndKey(clone, model)
       clone.placeholder !== undefined && (clone.placeholder += config.label)
       tempActiveData = clone
       return tempActiveData
     },
-    createIdAndKey(item) {
+    createIdAndKey(item, model) {
       const config = item.__config__
       config.formId = ++this.idGlobal
       config.renderKey = `${config.formId}${+new Date()}` // 改变renderKey后可以实现强制更新组件
       if (config.layout === 'colFormItem') {
-        item.__vModel__ = `field${this.idGlobal}`
+        item.__vModel__ = model ? model : `field${this.idGlobal}`
       } else if (config.layout === 'rowFormItem') {
         config.componentName = `row${this.idGlobal}`
         !Array.isArray(config.children) && (config.children = [])

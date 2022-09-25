@@ -114,6 +114,15 @@ const layouts = {
 }
 
 const tags = {
+  'jox-upload': el => {
+    const { tag } = attrBuilder(el)
+
+    return `<${tag} 
+     :imageSize="{ width: ${el.__custom__.imageSizeWidth}, height: ${el.__custom__.imageSizeWidth}}"
+     :coverImageSize="{ width: ${el.__custom__.coverImageSizeWidth}, height: ${el.__custom__.coverImageSizeHeight}}"
+     :imageDefaultUrl="dataForm.${el.__custom__.imageDefaultUrl}"
+     />`
+  },
   'el-button': el => {
     const {
       tag, disabled
@@ -296,7 +305,7 @@ const tags = {
 function attrBuilder(el) {
   return {
     tag: el.__config__.tag,
-    vModel: `v-model="${confGlobal.formModel}.${el.__vModel__}"`,
+    vModel: el.model ? `v-model="${el.model}"` : `v-model="${confGlobal.formModel}.${el.__vModel__}"`,
     clearable: el.clearable ? 'clearable' : '',
     placeholder: el.placeholder ? `placeholder="${el.placeholder}"` : '',
     width: el.style && el.style.width ? ':style="{width: \'100%\'}"' : '',
@@ -387,6 +396,7 @@ export function makeUpHtml(formConfig, type) {
   formConfig.fields.forEach(el => {
     htmlList.push(layouts[el.__config__.layout](el))
   })
+  console.log(htmlList)
   const htmlStr = htmlList.join('\n')
   // 将组件代码放进form标签
   let temp = buildFormTemplate(formConfig, htmlStr, type)

@@ -51,8 +51,16 @@ export function makeUpJs(formConfig, type) {
 function buildAttributes(scheme, dataList, ruleList, optionsList, methodList, propsList, uploadVarList, created) {
   const config = scheme.__config__
   const slot = scheme.__slot__
+  // 自定义方法
+  const method = scheme.__method__
+
   buildData(scheme, dataList)
   buildRules(scheme, ruleList)
+
+  // 处理自定义 method
+  if (method) {
+    methodList.push(method)
+  }
 
   // 特殊处理options属性
   if (scheme.options || (slot && slot.options && slot.options.length)) {

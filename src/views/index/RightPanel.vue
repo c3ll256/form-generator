@@ -10,7 +10,7 @@
       </a>
       <el-scrollbar class="right-scrollbar">
         <!-- 组件属性 -->
-        <el-form v-show="currentTab==='field' && showField" size="small" label-width="90px">
+        <el-form v-show="currentTab === 'field' && showField && !activeData.isCustom" size="small" label-width="90px">
           <el-form-item v-if="activeData.__config__.changeTag" label="组件类型">
             <el-select
               v-model="activeData.__config__.tagIcon"
@@ -586,6 +586,16 @@
               </el-button>
             </div>
           </template>
+        </el-form>
+        <!-- 自定义属性 -->
+        <el-form v-show="currentTab === 'field' && activeData.isCustom"
+                 size="small"
+                 label-position="top"
+                 label-width="90px"
+        >
+          <el-form-item v-for="(value, key) in activeData.__custom__" :key="key" :label="key">
+            <el-input v-model="activeData.__custom__[key]" placeholder="请输入" />
+          </el-form-item>
         </el-form>
         <!-- 表单属性 -->
         <el-form v-show="currentTab === 'form'" size="small" label-width="90px">
